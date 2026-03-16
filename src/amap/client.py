@@ -7,12 +7,16 @@ import time
 
 import requests
 
+from amap.coordinate import CoordinateAPI
+from amap.direction import DirectionAPI
 from amap.distance import DistanceAPI
 from amap.district import DistrictAPI
 from amap.exceptions import AmapAPIError, AmapNetworkError
 from amap.geocoding import GeocodingAPI
 from amap.inputtips import InputTipsAPI
 from amap.poi import PoiAPI
+from amap.staticmap import StaticMapAPI
+from amap.traffic import TrafficAPI
 from amap.weather import WeatherAPI
 
 BASE_URL = "https://restapi.amap.com"
@@ -39,6 +43,10 @@ class AmapClient:
         self.district = DistrictAPI(self)
         self.inputtips = InputTipsAPI(self)
         self.distance = DistanceAPI(self)
+        self.direction = DirectionAPI(self)
+        self.staticmap = StaticMapAPI(self)
+        self.coordinate = CoordinateAPI(self)
+        self.traffic = TrafficAPI(self)
 
     def _request(
         self,
@@ -102,3 +110,42 @@ class AmapClient:
 
         # Should not reach here, but just in case
         raise last_exc or AmapNetworkError("Request failed")
+
+    def _request_raw(self, path: str, params: dict | None = None) -> bytes:
+        """Like _request() but returns raw response bytes (for binary endpoints like staticmap).
+
+        Args:
+            path: URL path starting with / (e.g. "/v3/staticmap").
+            params: Query parameters (key is injected automatically).
+
+        Returns:
+            Raw response bytes.
+
+        Raises:
+            AmapNetworkError: On HTTP failures after retries exhausted.
+        """
+        url = f"{BASE_URL}{path}"
+        params = dict(params or {})
+        params["key"] = self.api_key
+
+        last_error: Exception | None = None
+        for attempt in range(MAX_RETRIES + 1):
+            try:
+                resp = self._session.get(url, params=params, timeout=TIMEOUT)
+                if resp.status_code in (429, 500, 502, 503, 504):
+                    last_error = AmapNetworkError(
+                        f"HTTP {resp.status_code} from {url}"
+                    )
+                    if attempt < MAX_RETRIES:
+                        time.sleep(BACKOFF_BASE * (2**attempt))
+                        continue
+                    raise last_error
+                resp.raise_for_status()
+                return resp.content
+            except requests.RequestException as exc:
+                last_error = AmapNetworkError(str(exc))
+                if attempt < MAX_RETRIES:
+                    time.sleep(BACKOFF_BASE * (2**attempt))
+                    continue
+                raise last_error from exc
+        raise last_error or AmapNetworkError("Max retries exceeded")
