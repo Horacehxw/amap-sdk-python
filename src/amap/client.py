@@ -7,7 +7,13 @@ import time
 
 import requests
 
+from amap.distance import DistanceAPI
+from amap.district import DistrictAPI
 from amap.exceptions import AmapAPIError, AmapNetworkError
+from amap.geocoding import GeocodingAPI
+from amap.inputtips import InputTipsAPI
+from amap.poi import PoiAPI
+from amap.weather import WeatherAPI
 
 BASE_URL = "https://restapi.amap.com"
 TIMEOUT = 10
@@ -25,6 +31,14 @@ class AmapClient:
                 "API key is required. Pass api_key= or set AMAP_MAPS_API_KEY."
             )
         self._session = requests.Session()
+
+        # Namespace APIs
+        self.geocoding = GeocodingAPI(self)
+        self.poi = PoiAPI(self)
+        self.weather = WeatherAPI(self)
+        self.district = DistrictAPI(self)
+        self.inputtips = InputTipsAPI(self)
+        self.distance = DistanceAPI(self)
 
     def _request(
         self,
