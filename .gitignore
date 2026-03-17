@@ -9,3 +9,8 @@ build/
 .coverage
 *.egg
 .env
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
