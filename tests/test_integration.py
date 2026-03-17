@@ -1,6 +1,6 @@
 """Integration tests that hit the real Amap API.
 
-Run with: AMAP_MAPS_API_KEY=<key> pytest tests/test_integration.py -v -m integration
+Run with: AMAP_MAPS_KEY=<key> pytest tests/test_integration.py -v -m integration
 """
 
 import pytest
@@ -12,7 +12,7 @@ pytestmark = pytest.mark.integration
 
 @pytest.fixture
 def client():
-    return AmapClient()  # reads AMAP_MAPS_API_KEY from env
+    return AmapClient()  # reads AMAP_MAPS_KEY from env
 
 
 def test_geocode_chongqing(client):

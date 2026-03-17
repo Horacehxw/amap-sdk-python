@@ -18,12 +18,12 @@ class TestAmapClientInit:
         assert client.api_key == "test_fake_key"
 
     def test_env_key(self, monkeypatch):
-        monkeypatch.setenv("AMAP_MAPS_API_KEY", "env_fake_key")
+        monkeypatch.setenv("AMAP_MAPS_KEY", "env_fake_key")
         client = AmapClient()
         assert client.api_key == "env_fake_key"
 
     def test_no_key_raises(self, monkeypatch):
-        monkeypatch.delenv("AMAP_MAPS_API_KEY", raising=False)
+        monkeypatch.delenv("AMAP_MAPS_KEY", raising=False)
         with pytest.raises(ValueError, match="API key"):
             AmapClient()
 

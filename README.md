@@ -1,5 +1,10 @@
 # amap-sdk-python
 
+[![PyPI version](https://img.shields.io/pypi/v/amap-sdk.svg)](https://pypi.org/project/amap-sdk/)
+[![Python](https://img.shields.io/pypi/pyversions/amap-sdk.svg)](https://pypi.org/project/amap-sdk/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://github.com/Horacehxw/amap-sdk-python/actions/workflows/tests.yml/badge.svg)](https://github.com/Horacehxw/amap-sdk-python/actions/workflows/tests.yml)
+
 Python SDK for the [Amap (高德地图)](https://lbs.amap.com/) Web Service REST API.
 
 > **Disclaimer:** This is an unofficial, community-maintained SDK. 高德地图 is a trademark of AutoNavi Software Co., Ltd. (Alibaba Group). This project is not affiliated with or endorsed by Amap/AutoNavi.
@@ -14,7 +19,7 @@ Python SDK for the [Amap (高德地图)](https://lbs.amap.com/) Web Service REST
 ## Installation
 
 ```bash
-pip install git+https://github.com/Horacehxw/amap-sdk-python.git
+pip install amap-sdk
 ```
 
 For development:
@@ -30,7 +35,7 @@ pip install -e ".[dev]"
 ```python
 from amap import AmapClient
 
-# Via environment variable AMAP_MAPS_API_KEY, or pass directly:
+# Via environment variable AMAP_MAPS_KEY, or pass directly:
 client = AmapClient(api_key="your_api_key")
 
 # Geocoding
@@ -76,9 +81,28 @@ pytest -v
 pytest -v -m "not integration"
 
 # Integration tests (requires real API key)
-AMAP_MAPS_API_KEY=your_key pytest -v -m integration
+AMAP_MAPS_KEY=your_key pytest -v -m integration
 ```
 
 ## License
 
 [MIT](LICENSE)
+
+---
+
+## 中文说明
+
+高德地图 Web Service REST API 的 Python SDK，覆盖地理编码、POI 搜索、路线规划、天气查询等 10 个模块。
+
+**安装：**
+```bash
+pip install amap-sdk
+```
+
+**特性：**
+- POI 搜索使用最新 v5 API
+- 完整类型注解，仅依赖 `requests`
+- 72 个测试（68 单元 + 4 集成），无需 API Key 即可运行单元测试
+- 支持坐标系转换（GPS/百度 → GCJ-02）
+
+**使用前需要：** 在[高德开放平台](https://console.amap.com/)注册并获取 API Key。

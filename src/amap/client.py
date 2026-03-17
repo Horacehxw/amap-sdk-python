@@ -29,10 +29,10 @@ class AmapClient:
     """Low-level client that handles auth, retries, and error mapping."""
 
     def __init__(self, api_key: str | None = None) -> None:
-        self.api_key = api_key or os.environ.get("AMAP_MAPS_API_KEY")
+        self.api_key = api_key or os.environ.get("AMAP_MAPS_KEY")
         if not self.api_key:
             raise ValueError(
-                "API key is required. Pass api_key= or set AMAP_MAPS_API_KEY."
+                "API key is required. Pass api_key= or set AMAP_MAPS_KEY."
             )
         self._session = requests.Session()
 
