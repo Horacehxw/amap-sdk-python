@@ -1,13 +1,20 @@
 """Integration tests that hit the real Amap API.
 
-Run with: AMAP_MAPS_KEY=<key> pytest tests/test_integration.py -v -m integration
+Run with: AMAP_LIVE=1 AMAP_MAPS_KEY=<key> pytest tests/test_integration.py -v -m integration
 """
 
+import os
 import pytest
 
 from amap.client import AmapClient
 
-pytestmark = pytest.mark.integration
+pytestmark = [
+    pytest.mark.integration,
+    pytest.mark.skipif(
+        os.environ.get("AMAP_LIVE") != "1" or not os.environ.get("AMAP_MAPS_KEY"),
+        reason="AMAP_LIVE=1 and AMAP_MAPS_KEY are required",
+    ),
+]
 
 
 @pytest.fixture
